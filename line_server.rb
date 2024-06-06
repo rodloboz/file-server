@@ -5,16 +5,22 @@ require_relative 'file_processor'
 class LineServer < Sinatra::Base
   configure do
     set :filepath, ENV['FILE_TO_SERVE']
-    set :processor, nil
+    set :processor, FileProcessor.new(settings.filepath)
 
-    before do
-      settings.processor ||= FileProcessor.new(settings.filepath)
+    at_exit do
+      settings.processor.shutdown
     end
   end
 
   get '/lines/:line_number' do
-    line_number = params[:line_number].to_i
-    line_content = settings.processor.fetch_line(line_number)
+    line_number_param = params[:line_number]
+    if line_number_param !~ /^\d+$/ || line_number_param.to_i <= 0
+      status 400
+      return body "Invalid line number: #{line_number_param}"
+    end
+
+    line_number = line_number_param.to_i
+    line_content = settings.processor.fetch_line(line_number - 1)
 
     if line_content
       status 200

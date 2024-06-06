@@ -26,6 +26,7 @@ GEM
       async-container (~> 0.16)
     base64 (0.2.0)
     byebug (11.1.3)
+    connection_pool (2.4.1)
     console (1.25.2)
       fiber-annotation
       fiber-local (~> 1.1)
@@ -156,6 +157,7 @@ PLATFORMS
 
 DEPENDENCIES
   byebug
+  connection_pool
   debug
   falcon
   rspec
