@@ -1,0 +1,4 @@
+.byebug*
+data.txt
+
+supervisor.ipc
