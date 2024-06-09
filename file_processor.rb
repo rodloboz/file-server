@@ -1,13 +1,18 @@
 require 'connection_pool'
 
 class FileProcessor
+  CONNECTION_POOL_SIZE = 5
+  CONNECTION_POOL_TIMEOUT = 5
+
   attr_reader :filepath, :index, :pool, :sparse_factor
 
   def initialize(filepath)
     @filepath = filepath
     @index = {}
     @sparse_factor = calculate_sparse_factor
-    @pool = ConnectionPool.new(size: 5, timeout: 5) { File.open(filepath, 'r') }
+    @pool = ConnectionPool.new(size: CONNECTION_POOL_SIZE, timeout: CONNECTION_POOL_TIMEOUT) do
+      File.open(filepath, 'r')
+    end
     build_index
   end
 
